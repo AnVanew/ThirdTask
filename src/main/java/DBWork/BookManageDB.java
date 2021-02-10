@@ -14,9 +14,10 @@ public class BookManageDB {
     PreparedStatement preparedStatement;
     ResultSet resultSet;
     DBWorker dbWorker = new DBWorker();
+    MarksDB marksDB = new MarksDB();
+
 
     public void addBookWithAutor(String name, String surname, String bookname, int year, String annotation){
-        MarksDB marksDB = new MarksDB();
         if (!checkSameAutor(name,surname)) addAutor(name, surname);
         addBook(name, surname, bookname, year, annotation);
         Book book = new Book(name, surname, bookname, year, annotation);
@@ -112,13 +113,31 @@ public class BookManageDB {
         return bookId;
     }
 
-    public void deleteBook(String bookName, String name, String surname ){
+    public int getBookId(String name, String surname, String bookName){
+        int bookId=-1;
+        try {
+            preparedStatement = dbWorker.getConnection().prepareStatement("SELECT ID FROM BOOKS WHERE book_name = ? AND autor_id = (SELECT ID FROM AUTORS WHERE NAME = ? AND SURNAME = ?)");
+            preparedStatement.setString(1, bookName);
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, surname);
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            bookId = resultSet.getInt("id");
+        }
+        catch (SQLException e){
+            logger.error(e);
+        }
+        finally {
+            dbWorker.CloseConnect();
+        }
+        return bookId;
+    }
+
+    public void deleteBook(int bookId){
         try {
             preparedStatement = dbWorker.getConnection().prepareStatement(
-            "DELETE FROM BOOKS WHERE book_name = ? AND autor_id = (SELECT id FROM autors WHERE name = ? AND surname = ?)");
-            preparedStatement.setString(1,bookName);
-            preparedStatement.setString(2,name);
-            preparedStatement.setString(3, surname);
+            "DELETE FROM BOOKS WHERE id =  ?");
+            preparedStatement.setInt(1,bookId);
             preparedStatement.executeUpdate();
         }
         catch (SQLException e){
@@ -181,14 +200,12 @@ public class BookManageDB {
         return books;
     }
 
-    public void updateBook(String newAnnotation,String name,String surname,String bookName){
+    public void updateBook(String newAnnotation,int bookId){
         try {
             preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "UPDATE books set annotation = ? WHERE autor_id = (SELECT ID FROM AUTORS WHERE name = ? AND surname = ?) AND book_name = ?");
+                    "UPDATE books set annotation = ? WHERE id = ?");
             preparedStatement.setString(1,newAnnotation);
-            preparedStatement.setString(2,name);
-            preparedStatement.setString(3,surname);
-            preparedStatement.setString(4,bookName);
+            preparedStatement.setInt(2, bookId);
             preparedStatement.executeUpdate();
 
         }

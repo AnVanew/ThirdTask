@@ -60,9 +60,9 @@ public class OneBookServlet extends HttpServlet {
         Book book = bookManageDB.getBooksByAutorAndBookName(name, surname, bookName);
         int bookId = bookManageDB.getBookId(book);
         if ("like".equals(req.getParameter("action")))
-            marksDB.like(book);
+            marksDB.like(bookId);
         if ("dislike".equals(req.getParameter("action")))
-            marksDB.dislike(book);
+            marksDB.dislike(bookId);
         if ("newComment".equals(req.getParameter("action"))) {
             String userName = req.getParameter("userName");
             String comment = req.getParameter("comment");

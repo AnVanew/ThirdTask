@@ -1,6 +1,8 @@
 package Servlets;
 
 import DBWork.BookManageDB;
+import DBWork.CommentsDB;
+import DBWork.MarksDB;
 import Models.Book;
 import org.apache.log4j.Logger;
 
@@ -17,6 +19,8 @@ public class BookManageServlet extends HttpServlet {
 
     private Logger logger = Logger.getLogger(BookManageServlet.class);
     private BookManageDB bookManageDB = new BookManageDB();
+    MarksDB marksDB = new MarksDB();
+    CommentsDB commentsDB = new CommentsDB();
 
     public void init(ServletConfig servletConfig) {
         try {
@@ -61,7 +65,8 @@ public class BookManageServlet extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        bookManageDB.updateBook(newAnnotation, name, surname, bookName);
+        int bookId = bookManageDB.getBookId(name, surname, bookName);
+        bookManageDB.updateBook(newAnnotation, bookId);
         resp.sendRedirect("books");
     }
 
@@ -71,7 +76,11 @@ public class BookManageServlet extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        bookManageDB.deleteBook(bookName, name, surname);
+        Book book = bookManageDB.getBooksByAutorAndBookName(name, surname, bookName);
+        int bookId = bookManageDB.getBookId(book);
+        marksDB.deleteBookMarks(bookId);
+        commentsDB.deleteBookComments(bookId);
+        bookManageDB.deleteBook(bookId);
         resp.sendRedirect("books");
     }
 }

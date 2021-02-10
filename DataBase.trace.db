@@ -397,3 +397,20 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/nai
 	at org.h2.mvstore.FileStore.open(FileStore.java:172)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:381)
 	... 46 more
+2021-02-10 16:27:46 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM BOOKS WHERE ID =  ?)[*]"; SQL statement:
+DELETE FROM BOOKS WHERE id =  ?) [42000-200]
+2021-02-10 16:27:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: No data is available [2000-200]
+2021-02-10 16:27:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: No data is available [2000-200]
+2021-02-10 16:27:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM BOOKS WHERE ID =  ?)[*]"; SQL statement:
+DELETE FROM BOOKS WHERE id =  ?) [42000-200]
+2021-02-10 16:28:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: No data is available [2000-200]
+2021-02-10 16:28:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: No data is available [2000-200]
+2021-02-10 16:28:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM BOOKS WHERE ID =  ?)[*]"; SQL statement:
+DELETE FROM BOOKS WHERE id =  ?) [42000-200]

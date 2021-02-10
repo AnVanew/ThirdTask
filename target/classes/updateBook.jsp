@@ -12,7 +12,7 @@
 </head>
 <body>
 
-Редактировать пользователя
+Редактировать аннотацию книги
 
 <form action="books" method="post">
     <input type="text" name="newAnnotation" value="${param.newAnnotation}" placeholder=${param.newAnnotation}>

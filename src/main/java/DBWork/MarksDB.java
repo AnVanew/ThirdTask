@@ -13,13 +13,11 @@ public class MarksDB {
     ResultSet resultSet;
     DBWorker dbWorker = new DBWorker();
 
-    public void like(Book book) {
+    public void like(int bookId) {
         try {
             preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "UPDATE marks SET likes = likes + 1 WHERE id = (SELECT id from BOOKS  WHERE autor_id = (SELECT id from autors WHERE name = ? AND surname = ?) AND book_name = ?)");
-            preparedStatement.setString(1, book.getName());
-            preparedStatement.setString(2, book.getSurname());
-            preparedStatement.setString(3, book.getBookName());
+                    "UPDATE marks SET likes = likes + 1 WHERE id = ?");
+            preparedStatement.setInt(1, bookId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error(e);
@@ -28,13 +26,11 @@ public class MarksDB {
         }
     }
 
-    public void dislike(Book book){
+    public void dislike(int bookId){
         try {
             preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "UPDATE marks SET dislikes = dislikes + 1 WHERE id = (SELECT id from BOOKS  WHERE autor_id = (SELECT id from autors WHERE name = ? AND surname = ?) AND book_name = ?)");
-            preparedStatement.setString(1, book.getName());
-            preparedStatement.setString(2, book.getSurname());
-            preparedStatement.setString(3, book.getBookName());
+                "UPDATE marks SET dislikes = dislikes + 1 WHERE id = ?");
+            preparedStatement.setInt(1, bookId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error(e);
@@ -46,7 +42,7 @@ public class MarksDB {
     public void createBookMarks(int bookId){
         try {
             preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "INSERT INTO marks (id, likes, dislikes) VALUES (?, 0, 0)");
+                "INSERT INTO marks (id, likes, dislikes) VALUES (?, 0, 0)");
             preparedStatement.setInt(1, bookId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -89,4 +85,20 @@ public class MarksDB {
         }
         return bookLikes;
     }
+
+    public void deleteBookMarks(int bookId){
+        try {
+            preparedStatement = dbWorker.getConnection().prepareStatement(
+                    "DELETE FROM MARKS WHERE id = ?");
+            preparedStatement.setInt(1,bookId);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e){
+            logger.error(e);
+        }
+        finally {
+            dbWorker.CloseConnect();
+        }
+    }
+
 }

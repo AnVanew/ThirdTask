@@ -52,4 +52,19 @@ public class CommentsDB {
         }
         return comments;
     }
+
+    public void deleteBookComments(int bookId){
+        try {
+            preparedStatement = dbWorker.getConnection().prepareStatement(
+                    "DELETE FROM COMMENTS WHERE id = ?");
+            preparedStatement.setInt(1,bookId);
+            preparedStatement.executeUpdate();
+        }
+        catch (SQLException e){
+            logger.error(e);
+        }
+        finally {
+            dbWorker.CloseConnect();
+        }
+    }
 }
