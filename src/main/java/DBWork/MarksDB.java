@@ -1,6 +1,5 @@
 package DBWork;
 
-import Models.Book;
 import org.apache.log4j.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,96 +8,54 @@ import java.sql.SQLException;
 public class MarksDB {
 
     private Logger logger = Logger.getLogger(BookManageDB.class);
-    PreparedStatement preparedStatement;
     ResultSet resultSet;
-    DBWorker dbWorker = new DBWorker();
 
     public void like(int bookId) {
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "UPDATE marks SET likes = likes + 1 WHERE id = ?");
-            preparedStatement.setInt(1, bookId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "UPDATE marks SET likes = likes + 1 WHERE id = " + bookId;
+        DBWorker.getUpdate(query);
     }
 
     public void dislike(int bookId){
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                "UPDATE marks SET dislikes = dislikes + 1 WHERE id = ?");
-            preparedStatement.setInt(1, bookId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "UPDATE marks SET dislikes = dislikes + 1 WHERE id = " + bookId;
+        DBWorker.getUpdate(query);
     }
 
     public void createBookMarks(int bookId){
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                "INSERT INTO marks (id, likes, dislikes) VALUES (?, 0, 0)");
-            preparedStatement.setInt(1, bookId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "INSERT INTO marks (id, likes, dislikes) VALUES (" + bookId + ", 0, 0)";
+        DBWorker.getUpdate(query);
     }
 
     public int getBookLikes(int bookId){
         int bookLikes = 0;
+        String query = "SELECT likes FROM MARKS WHERE ID = "+bookId;
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "SELECT likes FROM MARKS WHERE ID = ?");
-            preparedStatement.setInt(1, bookId);
-            resultSet = preparedStatement.executeQuery();
             resultSet.next();
             bookLikes = resultSet.getInt("likes");
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            dbWorker.CloseConnect();
+        } catch (SQLException throwables) {
+            logger.error(throwables);
         }
+        DBWorker.closeConnect();
         return bookLikes;
     }
 
     public int getBookDislikes(int bookId){
-        int bookLikes = 0;
+        int bookDislikes = 0;
+        String query = "SELECT dislikes FROM MARKS WHERE ID = "+bookId;
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "SELECT dislikes FROM MARKS WHERE ID = ?");
-            preparedStatement.setInt(1, bookId);
-            resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            bookLikes = resultSet.getInt("dislikes");
-        } catch (SQLException e) {
-            logger.error(e);
-        } finally {
-            dbWorker.CloseConnect();
+            bookDislikes = resultSet.getInt("dislikes");
+        } catch (SQLException throwables) {
+            logger.error(throwables);
         }
-        return bookLikes;
+        DBWorker.closeConnect();
+        return bookDislikes;
     }
 
     public void deleteBookMarks(int bookId){
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "DELETE FROM MARKS WHERE id = ?");
-            preparedStatement.setInt(1,bookId);
-            preparedStatement.executeUpdate();
-        }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "DELETE FROM MARKS WHERE id = " + bookId;
+        DBWorker.getUpdate(query);
     }
 
 }

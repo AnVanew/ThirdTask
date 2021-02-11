@@ -11,176 +11,111 @@ import java.util.List;
 
 public class BookManageDB {
     private Logger logger = Logger.getLogger(BookManageDB.class);
-    PreparedStatement preparedStatement;
     ResultSet resultSet;
-    DBWorker dbWorker = new DBWorker();
     MarksDB marksDB = new MarksDB();
 
 
     public void addBookWithAutor(String name, String surname, String bookname, int year, String annotation){
         if (!checkSameAutor(name,surname)) addAutor(name, surname);
         addBook(name, surname, bookname, year, annotation);
-        Book book = new Book(name, surname, bookname, year, annotation);
-        marksDB.createBookMarks(getBookId(book));
+        int bookId = getBookId(name ,surname, bookname);
+        marksDB.createBookMarks(bookId);
     }
 
-    private boolean checkSameAutor(String name, String surname){
+    public boolean checkSameAutor(String name, String surname){
+        String query = "SELECT * FROM AUTORS WHERE name = '" + name +  "' AND surname = '"+surname+"'";
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement("SELECT * FROM AUTORS WHERE name = ? AND surname = ?");
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        DBWorker.closeConnect();
         return false;
     }
 
     private void addAutor(String name, String surname){
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement("INSERT INTO Autors (name, surname) VALUES(?,?)");
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-            preparedStatement.executeUpdate();
-        }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "INSERT INTO Autors (name, surname) VALUES('"+name+"','"+surname+"')";
+        DBWorker.getUpdate(query);
     }
 
     private void addBook(String name, String surname, String bookName, int year, String annotation){
-        try {
-            int autorId = getAutorId(name, surname);
-            preparedStatement = dbWorker.getConnection().prepareStatement("INSERT INTO BOOKS (autor_id, book_name, year, annotation) VALUES(?,?,?,?)");
-            preparedStatement.setInt(1, autorId);
-            preparedStatement.setString(2, bookName);
-            preparedStatement.setInt(3, year);
-            preparedStatement.setString(4, annotation);
-            preparedStatement.executeUpdate();
-        }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        int autorId = getAutorId(name, surname);
+        String query = "INSERT INTO BOOKS (autor_id, book_name, year, annotation) VALUES("+autorId+",'"+bookName+"',"+year+",'"+annotation+"')";
+        DBWorker.getUpdate(query);
     }
 
     private int getAutorId(String name, String surname){
         int autorId=-1;
+        String query = "SELECT ID FROM AUTORS WHERE NAME = '"+name+"' AND SURNAME = '"+surname+"'";
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement("SELECT ID FROM AUTORS WHERE NAME = ? AND SURNAME = ?");
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-            resultSet = preparedStatement.executeQuery();
             resultSet.next();
             autorId = resultSet.getInt("id");
+        } catch (SQLException throwables) {
+            logger.error(throwables);
         }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        DBWorker.closeConnect();
         return autorId;
     }
 
     public int getBookId(Book book){
         int bookId=-1;
+        String query = "SELECT ID FROM BOOKS WHERE book_name = '"+book.getBookName()+"' AND autor_id = (SELECT ID FROM AUTORS WHERE NAME = '"+book.getName()+"' AND SURNAME = '"+book.getSurname()+"')";
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement("SELECT ID FROM BOOKS WHERE book_name = ? AND autor_id = (SELECT ID FROM AUTORS WHERE NAME = ? AND SURNAME = ?)");
-            preparedStatement.setString(1, book.getBookName());
-            preparedStatement.setString(2, book.getName());
-            preparedStatement.setString(3, book.getSurname());
-            resultSet = preparedStatement.executeQuery();
             resultSet.next();
             bookId = resultSet.getInt("id");
+        } catch (SQLException throwables) {
+            logger.error(throwables);
         }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        DBWorker.closeConnect();
         return bookId;
     }
 
     public int getBookId(String name, String surname, String bookName){
         int bookId=-1;
+        String query = "SELECT ID FROM BOOKS WHERE book_name = '"+bookName+"' AND autor_id = (SELECT ID FROM AUTORS WHERE NAME = '"+name+"' AND SURNAME = '"+surname+"')";
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement("SELECT ID FROM BOOKS WHERE book_name = ? AND autor_id = (SELECT ID FROM AUTORS WHERE NAME = ? AND SURNAME = ?)");
-            preparedStatement.setString(1, bookName);
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, surname);
-            resultSet = preparedStatement.executeQuery();
             resultSet.next();
             bookId = resultSet.getInt("id");
+        } catch (SQLException throwables) {
+            logger.error(throwables);
         }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        DBWorker.closeConnect();
         return bookId;
     }
 
     public void deleteBook(int bookId){
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-            "DELETE FROM BOOKS WHERE id =  ?");
-            preparedStatement.setInt(1,bookId);
-            preparedStatement.executeUpdate();
-        }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "DELETE FROM BOOKS WHERE id =  "+bookId;
+        DBWorker.getUpdate(query);
     }
 
     public Book getBooksByAutorAndBookName(String name, String surname, String bookName ){
         Book book = null;
+        String query = "SELECT * FROM BOOKS JOIN AUTORS ON AUTORS.ID = BOOKS.AUTOR_ID WHERE name = '"+name+"' AND surname = '"+surname+"' AND book_name = '"+bookName+"'";
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "SELECT * FROM BOOKS JOIN AUTORS ON AUTORS.ID = BOOKS.AUTOR_ID WHERE name = ? AND surname = ? AND book_name = ?");
-            preparedStatement.setString(1,name);
-            preparedStatement.setString(2,surname);
-            preparedStatement.setString(3,bookName);
-            resultSet = preparedStatement.executeQuery();
-            if(resultSet.next())
-            book = new Book(
+            if (resultSet.next())
+                book = new Book(
                         resultSet.getString("name"),
                         resultSet.getString("surname"),
                         resultSet.getString("book_name"),
                         resultSet.getInt("year"),
-                        resultSet.getString("annotation") );
-
+                        resultSet.getString("annotation"));
+        } catch (SQLException throwables){
+            logger.error(throwables);
         }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        DBWorker.closeConnect();
         return book;
     }
 
     public List<Book> getAllBooks(){
         List<Book> books = new ArrayList<>();
+        String query = "SELECT * FROM BOOKS JOIN AUTORS ON BOOKS.AUTOR_ID = AUTORS.ID";
+        resultSet = DBWorker.getQuerry(query);
         try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "SELECT * FROM BOOKS JOIN AUTORS ON BOOKS.AUTOR_ID = AUTORS.ID");
-            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 books.add(new Book(
                         resultSet.getString("name"),
@@ -194,26 +129,12 @@ public class BookManageDB {
         catch (SQLException e){
             logger.error(e);
         }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        DBWorker.closeConnect();
         return books;
     }
 
     public void updateBook(String newAnnotation,int bookId){
-        try {
-            preparedStatement = dbWorker.getConnection().prepareStatement(
-                    "UPDATE books set annotation = ? WHERE id = ?");
-            preparedStatement.setString(1,newAnnotation);
-            preparedStatement.setInt(2, bookId);
-            preparedStatement.executeUpdate();
-
-        }
-        catch (SQLException e){
-            logger.error(e);
-        }
-        finally {
-            dbWorker.CloseConnect();
-        }
+        String query = "UPDATE books set annotation = '"+newAnnotation+"' WHERE id = "+bookId;
+        DBWorker.getUpdate(query);
     }
 }
