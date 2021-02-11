@@ -14,7 +14,7 @@
 Если вы хотите начать работу с базой данных книг - <br>
 нажмите кнопку ниже:
 
-<form action = "books" >
+<form action = "initDataBase" >
     <input type="submit" value="Начать работу с базой данных">
 </form>
 </body>

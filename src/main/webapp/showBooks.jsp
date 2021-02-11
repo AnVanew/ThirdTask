@@ -20,6 +20,13 @@
     <input type="submit" value="Поиск" >
 </form>
 
+<form action="searchBook" method="get">
+    <input required type="text" name="name" placeholder="Имя">
+    <input required type="text" name="surname" placeholder="Фамилия">
+    <input type="hidden" name="action" value="searchAutorsBooks">
+    <input type="submit" value="Поиск" >
+</form>
+
 <table border="2">
     <tr>
         <td>Имя</td>

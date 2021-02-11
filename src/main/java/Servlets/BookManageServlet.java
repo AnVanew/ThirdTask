@@ -26,7 +26,7 @@ public class BookManageServlet extends HttpServlet {
         try {
             super.init(servletConfig);
         } catch (ServletException e) {
-            e.printStackTrace();
+            logger.fatal(e);
         }
     }
 

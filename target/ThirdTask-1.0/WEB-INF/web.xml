@@ -20,12 +20,22 @@
 
     <servlet>
         <servlet-name>OneBookServlet</servlet-name>
-        <servlet-class>Servlets.OneBookServlet</servlet-class>
+        <servlet-class>Servlets.BookServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>OneBookServlet</servlet-name>
         <url-pattern>/searchBook</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DataBaseServlet</servlet-name>
+        <servlet-class>Servlets.DataBaseServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DataBaseServlet</servlet-name>
+        <url-pattern>/initDataBase</url-pattern>
     </servlet-mapping>
 
 </web-app>

@@ -13,5 +13,11 @@
       <jdbc-driver>org.h2.Driver</jdbc-driver>
       <jdbc-url>jdbc:h2:file:$PROJECT_DIR$/DataBase</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="BookDBMem" uuid="5fd5e325-a7e5-43b2-8adf-6807e56286e0">
+      <driver-ref>h2.unified</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.h2.Driver</jdbc-driver>
+      <jdbc-url>jdbc:h2:mem:default;DB_CLOSE_DELAY=-1</jdbc-url>
+    </data-source>
   </component>
 </project>

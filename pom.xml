@@ -19,6 +19,10 @@
         <servlets.version>4.0.1</servlets.version>
         <jstl.version>1.2</jstl.version>
         <h2.jdbc.version>1.4.200</h2.jdbc.version>
+        <lombok.version>1.18.18</lombok.version>
+
+        <maven-war-plugin.version>3.3.0</maven-war-plugin.version>
+        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
     </properties>
 
     <build>
@@ -26,13 +30,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven-war-plugin.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -70,6 +74,14 @@
             <artifactId>h2</artifactId>
             <version>${h2.jdbc.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
 
 
     </dependencies>

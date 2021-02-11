@@ -11,16 +11,17 @@ public class DBWorker {
 
     private static Logger logger = Logger.getLogger(DBWorker.class);
     private static Connection connection;
-    private static String URL = "jdbc:h2:file:C:/Users/naic infa/Desktop/prog/Java/ThirdTask/DataBase";
+    private static String URL = "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1";
     private static String user = "postgres";
     private static String password = "1709dada99";
 
     public static Connection getConnection () throws SQLException {
-        createConnection();
+        connection =  createConnection();
         return connection;
     }
 
-    private static void createConnection() throws SQLException {
+    private static Connection createConnection() throws SQLException {
+        Connection connection = null;
         try {
             Class.forName("org.h2.Driver");
             connection = DriverManager.getConnection(URL, user, password);
@@ -29,7 +30,9 @@ public class DBWorker {
             logger.error(e);
             throw new SQLException();
         }
+        return connection;
     }
+
     public static void closeConnect() {
         try {
             connection.close();
@@ -52,12 +55,18 @@ public class DBWorker {
 
     public static void executeUpdate(String querry) {
         try {
-          getConnection().createStatement().executeUpdate(querry);
+            Connection connection = createConnection();
+            try {
+                connection.createStatement().executeUpdate(querry);
+            }
+            catch (SQLException e){
+                logger.error(e);
+            }
+            finally {
+                connection.close();
+            }
         } catch (SQLException throwables) {
             logger.error(throwables);
-        }
-        finally {
-            closeConnect();
         }
     }
 

@@ -91,6 +91,29 @@ public class BookManageDB {
         DBWorker.executeUpdate(query);
     }
 
+    public List<Book> getBooksByAutor(String name, String surname){
+        List<Book> books = new ArrayList<>();
+        String query = "SELECT * FROM BOOKS JOIN AUTORS ON AUTORS.ID = BOOKS.AUTOR_ID WHERE name = '"+name+"' AND surname = '"+surname+"'";
+        resultSet = DBWorker.executeQuery(query);
+        try {
+            while (resultSet.next()){
+                books.add(new Book(
+                        resultSet.getString("name"),
+                        resultSet.getString("surname"),
+                        resultSet.getString("book_name"),
+                        resultSet.getInt("year"),
+                        resultSet.getString("annotation") )
+                );
+            }
+            logger.info(books);
+        }
+        catch (SQLException e){
+            logger.error(e);
+        }
+        DBWorker.closeConnect();
+        return books;
+    }
+
     public Book getBooksByAutorAndBookName(String name, String surname, String bookName ){
         Book book = null;
         String query = "SELECT * FROM BOOKS JOIN AUTORS ON AUTORS.ID = BOOKS.AUTOR_ID WHERE name = '"+name+"' AND surname = '"+surname+"' AND book_name = '"+bookName+"'";
