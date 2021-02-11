@@ -39,7 +39,7 @@ public class DBWorker {
         }
     }
 
-    public static ResultSet getQuerry(String querry) {
+    public static ResultSet executeQuery(String querry) {
         ResultSet resultSet = null;
         try {
             resultSet = getConnection().createStatement().executeQuery(querry);
@@ -50,7 +50,7 @@ public class DBWorker {
         return resultSet;
     }
 
-    public static void getUpdate(String querry) {
+    public static void executeUpdate(String querry) {
         try {
           getConnection().createStatement().executeUpdate(querry);
         } catch (SQLException throwables) {

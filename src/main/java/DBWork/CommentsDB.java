@@ -2,7 +2,7 @@ package DBWork;
 
 import Models.Comment;
 import org.apache.log4j.Logger;
-import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,13 +14,13 @@ public class CommentsDB {
 
     public void addComment(int bookId, String userName, String comment){
         String query = "INSERT INTO comments (id, user_name, comment) VALUES ("+bookId+", '"+userName+"', '"+comment+"')";
-        DBWorker.getUpdate(query);
+        DBWorker.executeUpdate(query);
     }
 
     public List<Comment> getAllComments(int bookId){
         List<Comment> comments = new ArrayList<>();
         String query = "SELECT * FROM comments WHERE id = "+bookId;
-        resultSet = DBWorker.getQuerry(query);
+        resultSet = DBWorker.executeQuery(query);
         try {
             while (resultSet.next()){
                 comments.add(new Comment(
@@ -37,6 +37,6 @@ public class CommentsDB {
 
     public void deleteBookComments(int bookId){
         String query = "DELETE FROM COMMENTS WHERE id = " +bookId;
-        DBWorker.getUpdate(query);
+        DBWorker.executeUpdate(query);
     }
 }
