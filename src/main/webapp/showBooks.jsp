@@ -5,7 +5,7 @@
   Time: 5:26 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -13,13 +13,14 @@
 </head>
 <body>
 
+Поиск по автору и названию
 <form action="searchBook" method="get">
     <input required type="text" name="name" placeholder="Имя">
     <input required type="text" name="surname" placeholder="Фамилия">
     <input required type="text" name="bookName" placeholder="Название книги">
     <input type="submit" value="Поиск" >
 </form>
-
+Найти все книги автора
 <form action="searchBook" method="get">
     <input required type="text" name="name" placeholder="Имя">
     <input required type="text" name="surname" placeholder="Фамилия">
@@ -51,15 +52,14 @@
                     <input type="submit" value="Подробнее" style="float:left">
                 </form>
 
-                <form action = "updateBook.jsp" method="post">
+                <form action = "updateBook.jsp" >
                     <input type="hidden" name="name" value="${book.getName()}">
                     <input type="hidden" name="surname" value="${book.getSurname()}">
                     <input type="hidden" name="bookName" value="${book.getBookName()}">
-                    <input type="hidden" name="year" value="${book.getYear()}">
                     <input type="submit" value="Изменить" style="float:left">
                 </form>
 
-                <form action="deleteBook.jsp" method="post">
+                <form action="deleteBook.jsp">
                     <input type="hidden" name="name" value="${book.getName()}">
                     <input type="hidden" name="surname" value="${book.getSurname()}">
                     <input type="hidden" name="bookName" value="${book.getBookName()}">
@@ -71,8 +71,26 @@
     </c:forEach>
 </table>
 
-<form action = "addBook.jsp">
+<form action="books" method="post">
+    <input required type="text" name="name" placeholder="Имя">
+    <input required type="text" name="surname" placeholder="Фамилия">
+    <input type="hidden" name="action" value="addAutor">
+    <input type="submit" value="Добавить автора" >
+</form>
+
+
+
+<form action = "books" method="post">
+    <select name="autorId">
+        <c:forEach var="autor" items="${autors}">
+            <option value=${autor.getAutorId()}>${autor.getName()}  ${autor.getSurname()}</option>
+        </c:forEach>
+    </select>
+    <input required type="text" name="bookName" placeholder="Название книги">
+    <input required type="text" name="annotation" placeholder="Аннотация">
+    <input required type="text" type = number name="year" placeholder="Год">
     <input type="submit" value="Добавить новую книгу">
 </form>
+
 </body>
 </html>

@@ -2,7 +2,9 @@ package Servlets;
 
 import DBWork.BookManageDB;
 import DBWork.CommentsDB;
+import DBWork.DBWorker;
 import DBWork.MarksDB;
+import Models.Autor;
 import Models.Book;
 import org.apache.log4j.Logger;
 
@@ -23,6 +25,7 @@ public class BookManageServlet extends HttpServlet {
     CommentsDB commentsDB = new CommentsDB();
 
     public void init(ServletConfig servletConfig) {
+        DBWorker.createDB();
         try {
             super.init(servletConfig);
         } catch (ServletException e) {
@@ -34,7 +37,9 @@ public class BookManageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET ");
         List <Book> books = bookManageDB.getAllBooks();
+        List <Autor> autors = bookManageDB.getAllAutors();
         req.setAttribute("books", books);
+        req.setAttribute("autors", autors);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/showBooks.jsp");
         dispatcher.forward(req, resp);
     }
@@ -42,14 +47,22 @@ public class BookManageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method POST ");
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         if ("delete".equals(req.getParameter("action"))) {
             doDelete(req, resp);
         } else if ("update".equals(req.getParameter("action"))){
             doPut(req,resp);
-        }
-                else {
-            String name = req.getParameter("name");
+        } else if("addAutor".equals(req.getParameter("action"))) {
             String surname = req.getParameter("surname");
+            String name = req.getParameter("name");
+            bookManageDB.addAutor(name, surname);
+            resp.sendRedirect("books");
+        }
+        else {
+            Autor autor = bookManageDB.getAutorById(Integer.parseInt(req.getParameter("autorId")));
+            String name = autor.getName();
+            String surname = autor.getSurname();
             String bookName = req.getParameter("bookName");
             String annotation = req.getParameter("annotation");
             int year = Integer.parseInt(req.getParameter("year"));
@@ -61,12 +74,12 @@ public class BookManageServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method PUT ");
-        String newAnnotation = req.getParameter("newAnnotation");
-        String name = req.getParameter("name");
         String surname = req.getParameter("surname");
-        String bookName = req.getParameter("bookName");
-        int bookId = bookManageDB.getBookId(name, surname, bookName);
-        bookManageDB.updateBook(newAnnotation, bookId);
+        String name = req.getParameter("name");
+            String newAnnotation = req.getParameter("newAnnotation");
+            String bookName = req.getParameter("bookName");
+            int bookId = bookManageDB.getBookId(name, surname, bookName);
+            bookManageDB.updateBook(newAnnotation, bookId);
         resp.sendRedirect("books");
     }
 
@@ -76,7 +89,7 @@ public class BookManageServlet extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        Book book = bookManageDB.getBooksByAutorAndBookName(name, surname, bookName);
+        Book book = bookManageDB.getBookByAutorAndBookName(name, surname, bookName);
         int bookId = bookManageDB.getBookId(book);
         marksDB.deleteBookMarks(bookId);
         commentsDB.deleteBookComments(bookId);

@@ -35,9 +35,10 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
-        String name = req.getParameter("name");
-        String surname = req.getParameter("surname");
+
         if ("searchAutorsBooks".equals(req.getParameter("action"))){
+            String name = req.getParameter("name");
+            String surname = req.getParameter("surname");
             List<Book> books = bookManageDB.getBooksByAutor(name, surname);
             if (books.size() == 0){
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
@@ -48,8 +49,10 @@ public class BookServlet extends HttpServlet {
             dispatcher.forward(req, resp);
         }
         else {
+            String name = req.getParameter("name");
+            String surname = req.getParameter("surname");
             String bookName = req.getParameter("bookName");
-            Book book = bookManageDB.getBooksByAutorAndBookName(name, surname, bookName);
+            Book book = bookManageDB.getBookByAutorAndBookName(name, surname, bookName);
             if (book == null){
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
                 dispatcher.forward(req, resp);
@@ -70,10 +73,12 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method POST");
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        Book book = bookManageDB.getBooksByAutorAndBookName(name, surname, bookName);
+        Book book = bookManageDB.getBookByAutorAndBookName(name, surname, bookName);
         int bookId = bookManageDB.getBookId(book);
         if ("like".equals(req.getParameter("action")))
             marksDB.like(bookId);

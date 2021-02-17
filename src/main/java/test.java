@@ -7,7 +7,7 @@ public class test {
     public static void main(String[] args) throws SQLException {
         BookManageDB bookManageDB = new BookManageDB();
         DBWorker dbWorker = new DBWorker();
-        System.out.println(bookManageDB.checkSameAutor("Ivan", "Andreev"));
+       // System.out.println(bookManageDB.checkSameAutor("Ivan", "Andreev"));
 //        String querry = "SELECT * FROM books WHERE book_name = " + "'"+  "Happy New Year" + "'";
 //        System.out.println(querry);
 //            ResultSet resultSet = dbWorker.getQuerry(querry);

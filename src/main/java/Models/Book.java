@@ -6,9 +6,16 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class Book {
-    String name;
-    String surname;
+    Autor autor;
     String bookName;
     int year;
     String annotation;
+
+    public String getName(){
+        return autor.getName();
+    }
+
+    public String getSurname(){
+        return  autor.getSurname();
+    }
 }

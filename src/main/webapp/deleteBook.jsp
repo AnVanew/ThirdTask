@@ -14,6 +14,9 @@
 
 Вы действительно хотите удалить книгу ${param.bookName}?
 
+<%request.setCharacterEncoding("UTF-8");
+response.setCharacterEncoding("UTF-8");%>
+
 <form action="books" method="post">
 <input type="hidden" name="name" value="${param.name}">
 <input type="hidden" name="surname" value="${param.surname}">

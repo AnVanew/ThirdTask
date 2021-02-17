@@ -5,12 +5,13 @@
          version="4.0">
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>showBooks.jsp</welcome-file>
     </welcome-file-list>
 
     <servlet>
         <servlet-name>BookManageServlet</servlet-name>
         <servlet-class>Servlets.BookManageServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -28,14 +29,5 @@
         <url-pattern>/searchBook</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>DataBaseServlet</servlet-name>
-        <servlet-class>Servlets.DataBaseServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>DataBaseServlet</servlet-name>
-        <url-pattern>/initDataBase</url-pattern>
-    </servlet-mapping>
 
 </web-app>
