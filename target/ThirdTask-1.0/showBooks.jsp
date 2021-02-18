@@ -24,7 +24,7 @@
 <form action="searchBook" method="get">
     <input required type="text" name="name" placeholder="Имя">
     <input required type="text" name="surname" placeholder="Фамилия">
-    <input type="hidden" name="action" value="searchAutorsBooks">
+    <input type="hidden" name="action" value="searchAuthorsBooks">
     <input type="submit" value="Поиск" >
 </form>
 
@@ -74,16 +74,16 @@
 <form action="books" method="post">
     <input required type="text" name="name" placeholder="Имя">
     <input required type="text" name="surname" placeholder="Фамилия">
-    <input type="hidden" name="action" value="addAutor">
+    <input type="hidden" name="action" value="addAuthor">
     <input type="submit" value="Добавить автора" >
 </form>
 
 
 
 <form action = "books" method="post">
-    <select name="autorId">
-        <c:forEach var="autor" items="${autors}">
-            <option value=${autor.getAutorId()}>${autor.getName()}  ${autor.getSurname()}</option>
+    <select name="authorId">
+        <c:forEach var="author" items="${authors}">
+            <option value=${author.getAuthorId()}>${author.getName()}  ${author.getSurname()}</option>
         </c:forEach>
     </select>
     <input required type="text" name="bookName" placeholder="Название книги">

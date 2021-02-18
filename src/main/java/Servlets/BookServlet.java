@@ -19,10 +19,10 @@ import org.apache.log4j.Logger;
 
 public class BookServlet extends HttpServlet {
 
-    private Logger logger = Logger.getLogger(BookServlet.class);
-    private BookManageDB bookManageDB = new BookManageDB();
-    private MarksDB marksDB = new MarksDB();
-    private CommentsDB commentsDB = new CommentsDB();
+    private final Logger logger = Logger.getLogger(BookServlet.class);
+    private final BookManageDB bookManageDB = new BookManageDB();
+    private final MarksDB marksDB = new MarksDB();
+    private final CommentsDB commentsDB = new CommentsDB();
 
     public void init(ServletConfig servletConfig) {
         try {
@@ -36,23 +36,23 @@ public class BookServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
 
-        if ("searchAutorsBooks".equals(req.getParameter("action"))){
+        if ("searchAuthorsBooks".equals(req.getParameter("action"))){
             String name = req.getParameter("name");
             String surname = req.getParameter("surname");
-            List<Book> books = bookManageDB.getBooksByAutor(name, surname);
+            List<Book> books = bookManageDB.getBooksByAuthor(name, surname);
             if (books.size() == 0){
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
                 dispatcher.forward(req, resp);
             }
             req.setAttribute("books", books);
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/showAutorBooks.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/showAuthorBooks.jsp");
             dispatcher.forward(req, resp);
         }
         else {
             String name = req.getParameter("name");
             String surname = req.getParameter("surname");
             String bookName = req.getParameter("bookName");
-            Book book = bookManageDB.getBookByAutorAndBookName(name, surname, bookName);
+            Book book = bookManageDB.getBookByAuthorAndBookName(name, surname, bookName);
             if (book == null){
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
                 dispatcher.forward(req, resp);
@@ -78,7 +78,7 @@ public class BookServlet extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        Book book = bookManageDB.getBookByAutorAndBookName(name, surname, bookName);
+        Book book = bookManageDB.getBookByAuthorAndBookName(name, surname, bookName);
         int bookId = bookManageDB.getBookId(book);
         if ("like".equals(req.getParameter("action")))
             marksDB.like(bookId);

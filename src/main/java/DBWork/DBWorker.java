@@ -1,24 +1,17 @@
 package DBWork;
 
 import org.apache.log4j.Logger;
-
 import java.sql.*;
 
 public class DBWorker {
 
-    private static Logger logger = Logger.getLogger(DBWorker.class);
-    private static Connection connection;
-    private static String URL = "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1";
-    private static String user = "postgres";
-    private static String password = "1709dada99";
-
-    public static Connection getConnection () throws SQLException {
-        connection =  createConnection();
-        return connection;
-    }
+    private final static Logger logger = Logger.getLogger(DBWorker.class);
+    private final static String URL = "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1";
+    private final static String user = "postgres";
+    private final static String password = "1709dada99";
 
     private static Connection createConnection() throws SQLException {
-        Connection connection = null;
+        Connection connection;
         try {
             Class.forName("org.h2.Driver");
             connection = DriverManager.getConnection(URL, user, password);
@@ -30,44 +23,24 @@ public class DBWorker {
         return connection;
     }
 
-    public static void closeConnect() {
-        try {
-            connection.close();
-            logger.info("Connection   "+ connection + "  is close");
-        } catch (SQLException e) {
-            logger.error(e);
-        }
-    }
-
     public static void executeUpdate(String querry) {
-        try {
-            Connection connection = createConnection();
-            try {
-                connection.createStatement().executeUpdate(querry);
-            }
-            catch (SQLException e){
-                logger.error(e);
-            }
-            finally {
-                connection.close();
-            }
-        } catch (SQLException throwables) {
-            logger.error(throwables);
+        try (Connection connection = createConnection()) {
+            connection.createStatement().executeUpdate(querry);
+        }
+        catch (SQLException e){
+            logger.error(e);
+            throw new RuntimeException(e);
         }
     }
 
-    public static Object executeQuery(String queryString, StatementConsumer consumer) {
-        Object t = null;
-        try {
-            Connection connection = createConnection();
-            try {
+    public static <T> T executeQuery(String queryString, StatementConsumer consumer, ResultSetConsumer<T> resultSetConsumer) {
+        ResultSet resultSet;
+        T t = null;
+        try(Connection connection = createConnection()) {
                 PreparedStatement statement = connection.prepareStatement(queryString);
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) t = consumer.consume(resultSet);
-            } finally {
-                connection.close();
-                logger.info("Connection   "+ connection + "  is close");
-            }
+                consumer.consume(statement);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) t = resultSetConsumer.consume(resultSet);
         } catch (Exception e)  {
             logger.error(e);
             throw new RuntimeException(e);
@@ -77,20 +50,24 @@ public class DBWorker {
 
     @FunctionalInterface
     public interface StatementConsumer {
-        Object consume(ResultSet resultSet) throws Exception;
+        void consume(PreparedStatement preparedStatement) throws Exception;
     }
 
+    @FunctionalInterface
+    public  interface ResultSetConsumer <T> {
+        T consume(ResultSet resultSet) throws Exception;
+    }
 
     public static void  createDB(){
         String createBooksTable = "CREATE TABLE books (\n" +
                 "    id int PRIMARY KEY AUTO_INCREMENT,\n" +
-                "    autor_id int,\n" +
+                "    author_id int,\n" +
                 "    book_name VARCHAR (50),\n" +
                 "    year int,\n" +
                 "    annotation VARCHAR(200),\n" +
-                "    FOREIGN KEY (autor_id) REFERENCES AUTORS (id)\n" +
+                "    FOREIGN KEY (author_id) REFERENCES AUTHORS (id)\n" +
                 ")";
-        String createAutorsTable = "CREATE TABLE autors (\n" +
+        String createAuthorsTable = "CREATE TABLE authors (\n" +
                 "    id int PRIMARY KEY AUTO_INCREMENT,\n" +
                 "    name VARCHAR (50),\n" +
                 "    surname VARCHAR (100)\n" +
@@ -109,17 +86,16 @@ public class DBWorker {
                 "    comment VARCHAR (1000),\n" +
                 "    FOREIGN KEY (book_id) REFERENCES BOOKS (id)\n" +
                 ")";
-        String createNameSurnameIndex = "CREATE INDEX name_surname_index ON autors (name, surname)";
-        String createAutorIdIndex = "CREATE INDEX autorId_index ON books (autor_id)";
-        String createBookNameAutorIdIndex = "CREATE INDEX bookName_autorId_index ON books (book_name, autor_id)";
+        String createNameSurnameIndex = "CREATE INDEX name_surname_index ON authors (name, surname)";
+        String createAuthorIdIndex = "CREATE INDEX authorId_index ON books (author_id)";
+        String createBookNameAuthorIdIndex = "CREATE INDEX bookName_authorId_index ON books (book_name, author_id)";
 
-        DBWorker.executeUpdate(createAutorsTable);
+        DBWorker.executeUpdate(createAuthorsTable);
         DBWorker.executeUpdate(createBooksTable);
         DBWorker.executeUpdate(createMarksTable);
         DBWorker.executeUpdate(createCommentsTable);
         DBWorker.executeUpdate(createNameSurnameIndex);
-        DBWorker.executeUpdate(createAutorIdIndex);
-        DBWorker.executeUpdate(createBookNameAutorIdIndex);
+        DBWorker.executeUpdate(createAuthorIdIndex);
+        DBWorker.executeUpdate(createBookNameAuthorIdIndex);
     }
-
 }

@@ -6,16 +6,16 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class Book {
-    Autor autor;
+    Author author;
     String bookName;
     int year;
     String annotation;
 
     public String getName(){
-        return autor.getName();
+        return author.getName();
     }
 
     public String getSurname(){
-        return  autor.getSurname();
+        return  author.getSurname();
     }
 }
