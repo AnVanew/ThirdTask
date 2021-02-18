@@ -1,5 +1,6 @@
 package Servlets;
 
+import DBWork.AuthorsDB;
 import DBWork.BookManageDB;
 import DBWork.CommentsDB;
 import DBWork.MarksDB;
@@ -21,6 +22,7 @@ public class BookServlet extends HttpServlet {
 
     private final Logger logger = Logger.getLogger(BookServlet.class);
     private final BookManageDB bookManageDB = new BookManageDB();
+    private final AuthorsDB authorsDB = new AuthorsDB();
     private final MarksDB marksDB = new MarksDB();
     private final CommentsDB commentsDB = new CommentsDB();
 
@@ -35,39 +37,25 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
-
-        if ("searchAuthorsBooks".equals(req.getParameter("action"))){
-            String name = req.getParameter("name");
-            String surname = req.getParameter("surname");
-            List<Book> books = bookManageDB.getBooksByAuthor(name, surname);
-            if (books.size() == 0){
-                RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
-                dispatcher.forward(req, resp);
-            }
-            req.setAttribute("books", books);
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/showAuthorBooks.jsp");
+        String name = req.getParameter("name");
+        String surname = req.getParameter("surname");
+        int authorId = authorsDB.getAuthorId(name, surname);
+        String bookName = req.getParameter("bookName");
+        int bookId = bookManageDB.getBookId(bookName, authorId);
+        Book book = bookManageDB.getBookByAuthorAndBookName(bookId);
+        if (book == null){
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
             dispatcher.forward(req, resp);
         }
-        else {
-            String name = req.getParameter("name");
-            String surname = req.getParameter("surname");
-            String bookName = req.getParameter("bookName");
-            Book book = bookManageDB.getBookByAuthorAndBookName(name, surname, bookName);
-            if (book == null){
-                RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
-                dispatcher.forward(req, resp);
-            }
-            int bookId = bookManageDB.getBookId(book);
-            int likes = marksDB.getBookLikes(bookId);
-            int dislikes = marksDB.getBookDislikes(bookId);
-            List<Comment> comments = commentsDB.getAllComments(bookId);
-            req.setAttribute("book", book);
-            req.setAttribute("likes", likes);
-            req.setAttribute("dislikes", dislikes);
-            req.setAttribute("comments", comments);
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/showBook.jsp");
-            dispatcher.forward(req, resp);
-        }
+        int likes = marksDB.getBookLikes(bookId);
+        int dislikes = marksDB.getBookDislikes(bookId);
+        List<Comment> comments = commentsDB.getAllComments(bookId);
+        req.setAttribute("book", book);
+        req.setAttribute("likes", likes);
+        req.setAttribute("dislikes", dislikes);
+        req.setAttribute("comments", comments);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/showBook.jsp");
+        dispatcher.forward(req, resp);
     }
 
     @Override
@@ -78,17 +66,9 @@ public class BookServlet extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        Book book = bookManageDB.getBookByAuthorAndBookName(name, surname, bookName);
-        int bookId = bookManageDB.getBookId(book);
-        if ("like".equals(req.getParameter("action")))
-            marksDB.like(bookId);
-        if ("dislike".equals(req.getParameter("action")))
-            marksDB.dislike(bookId);
-        if ("newComment".equals(req.getParameter("action"))) {
-            String userName = req.getParameter("userName");
-            String comment = req.getParameter("comment");
-            commentsDB.addComment(bookId, userName, comment);
-        }
+        int authorId = authorsDB.getAuthorId(name, surname);
+        int bookId = bookManageDB.getBookId(bookName, authorId);
+        Book book = bookManageDB.getBookByAuthorAndBookName(bookId);
         int likes = marksDB.getBookLikes(bookId);
         int dislikes = marksDB.getBookDislikes(bookId);
         List<Comment> comments = commentsDB.getAllComments(bookId);

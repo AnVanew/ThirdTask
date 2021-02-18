@@ -21,10 +21,9 @@
     <input type="submit" value="Поиск" >
 </form>
 Найти все книги автора
-<form action="searchBook" method="get">
+<form action="authorsBooks" method="get">
     <input required type="text" name="name" placeholder="Имя">
     <input required type="text" name="surname" placeholder="Фамилия">
-    <input type="hidden" name="action" value="searchAuthorsBooks">
     <input type="submit" value="Поиск" >
 </form>
 
@@ -71,7 +70,7 @@
     </c:forEach>
 </table>
 
-<form action="books" method="post">
+<form action="authorsBooks" method="post">
     <input required type="text" name="name" placeholder="Имя">
     <input required type="text" name="surname" placeholder="Фамилия">
     <input type="hidden" name="action" value="addAuthor">
@@ -88,7 +87,7 @@
     </select>
     <input required type="text" name="bookName" placeholder="Название книги">
     <input required type="text" name="annotation" placeholder="Аннотация">
-    <input required type="text" type = number name="year" placeholder="Год">
+    <input required type="text" name="year" placeholder="Год">
     <input type="submit" value="Добавить новую книгу">
 </form>
 

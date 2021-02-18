@@ -29,5 +29,35 @@
         <url-pattern>/searchBook</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AuthorsServlet</servlet-name>
+        <servlet-class>Servlets.AuthorsServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AuthorsServlet</servlet-name>
+        <url-pattern>/authorsBooks</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>MarksServlet</servlet-name>
+        <servlet-class>Servlets.MarksServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>MarksServlet</servlet-name>
+        <url-pattern>/addMark</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CommentsServlet</servlet-name>
+        <servlet-class>Servlets.CommentsServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CommentsServlet</servlet-name>
+        <url-pattern>/addComment</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

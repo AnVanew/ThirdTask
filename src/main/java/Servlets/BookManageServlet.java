@@ -49,13 +49,8 @@ public class BookManageServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         if ("delete".equals(req.getParameter("action"))) {
             doDelete(req, resp);
-        } else if ("update".equals(req.getParameter("action"))){
-            doPut(req,resp);
-        } else if("addAuthor".equals(req.getParameter("action"))) {
-            String surname = req.getParameter("surname");
-            String name = req.getParameter("name");
-            authorsDB.addAuthor(name, surname);
-            resp.sendRedirect("books");
+        } else if ("update".equals(req.getParameter("action"))) {
+            doPut(req, resp);
         }
         else {
             Author author = authorsDB.getAuthorById(Integer.parseInt(req.getParameter("authorId")));
@@ -74,10 +69,11 @@ public class BookManageServlet extends HttpServlet {
         logger.info("Method PUT ");
         String surname = req.getParameter("surname");
         String name = req.getParameter("name");
-            String newAnnotation = req.getParameter("newAnnotation");
-            String bookName = req.getParameter("bookName");
-            int bookId = bookManageDB.getBookId(name, surname, bookName);
-            bookManageDB.updateBook(newAnnotation, bookId);
+        String newAnnotation = req.getParameter("newAnnotation");
+        String bookName = req.getParameter("bookName");
+        int authorId = authorsDB.getAuthorId(name, surname);
+        int bookId = bookManageDB.getBookId(bookName, authorId);
+        bookManageDB.updateBook(newAnnotation, bookId);
         resp.sendRedirect("books");
     }
 
@@ -87,8 +83,8 @@ public class BookManageServlet extends HttpServlet {
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        Book book = bookManageDB.getBookByAuthorAndBookName(name, surname, bookName);
-        int bookId = bookManageDB.getBookId(book);
+        int authorId = authorsDB.getAuthorId(name, surname);
+        int bookId = bookManageDB.getBookId(bookName, authorId);
         marksDB.deleteBookMarks(bookId);
         commentsDB.deleteBookComments(bookId);
         bookManageDB.deleteBook(bookId);

@@ -43,7 +43,7 @@
         <td>Понравилось:</td>
         <td>${likes}</td>
         <td>
-            <form action="searchBook" method="post">
+            <form action="addMark" method="post">
                 <input type="hidden" name="name" value="${param.name}">
                 <input type="hidden" name="surname" value="${param.surname}">
                 <input type="hidden" name="bookName" value="${param.bookName}">
@@ -57,7 +57,7 @@
         <td>Не понравилось:</td>
         <td>${dislikes}</td>
         <td>
-            <form action="searchBook" method="post">
+            <form action="addMark" method="post">
                 <input type="hidden" name="name" value="${param.name}">
                 <input type="hidden" name="surname" value="${param.surname}">
                 <input type="hidden" name="bookName" value="${param.bookName}">
@@ -69,13 +69,12 @@
 
     <tr>
         <td>
-            <form action="searchBook" method="post">
+            <form action="addComment" method="post">
                 <input type="hidden" name="name" value="${param.name}">
                 <input type="hidden" name="surname" value="${param.surname}">
                 <input type="hidden" name="bookName" value="${param.bookName}">
                 <input type="text" name="userName" placeholder="имя пользователя">
                 <input type="text" name="comment" placeholder="Ваш комментарий">
-                <input type="hidden" name="action" value="newComment">
                 <input type="submit" value="Добавить комментарий">
             </form>
         </td>

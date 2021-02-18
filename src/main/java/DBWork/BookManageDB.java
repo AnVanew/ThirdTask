@@ -23,24 +23,12 @@ public class BookManageDB {
         DBWorker.executeUpdate(query);
     }
 
-    public int getBookId(Book book){
+    public int getBookId(String bookName, int authorId){
         int bookId=-1;
-        String query = "SELECT ID FROM BOOKS WHERE book_name = ?  AND author_id = (SELECT ID FROM AUTHORS WHERE NAME = ? AND SURNAME = ?)";
-        bookId = DBWorker.executeQuery(query, (preparedStatement)->{
-            preparedStatement.setString(1, book.getBookName());
-            preparedStatement.setString(2, book.getName());
-            preparedStatement.setString(3, book.getSurname());},
-            this::bookIdFromResultSet);
-        return bookId;
-    }
-
-    public int getBookId(String name, String surname, String bookName){
-        int bookId=-1;
-        String query = "SELECT ID FROM BOOKS WHERE book_name = ?  AND author_id = (SELECT ID FROM AUTHORS WHERE NAME = ? AND SURNAME = ?)";
+        String query = "SELECT ID FROM BOOKS WHERE book_name = ?  AND author_id = ?";
         bookId = DBWorker.executeQuery(query, (preparedStatement)->{
             preparedStatement.setString(1, bookName);
-            preparedStatement.setString(2, name);
-            preparedStatement.setString(3, surname);},
+            preparedStatement.setInt(2, authorId);},
             this::bookIdFromResultSet);
         return bookId;
     }
@@ -54,12 +42,11 @@ public class BookManageDB {
         DBWorker.executeUpdate(query);
     }
 
-    public List<Book> getBooksByAuthor(String name, String surname){
+    public List<Book> getBooksByAuthor(int authorId){
         List<Book> books = new ArrayList<>();
-        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON AUTHORS.ID = BOOKS.AUTHOR_ID WHERE name = ? AND surname = ?";
+        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE author_id = ?";
         List<Book> res =  DBWorker.executeQuery(query, (preparedStatement) ->{
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);},
+            preparedStatement.setInt(1, authorId);},
             this::collectBookFromResultSet);
         if(res != null) books = res;
         return books;
@@ -80,13 +67,11 @@ public class BookManageDB {
         return booksList;
     }
 
-    public Book getBookByAuthorAndBookName(String name, String surname, String bookName ){
+    public Book getBookByAuthorAndBookName(int bookId){
         Book book;
-        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON AUTHORS.ID = BOOKS.AUTHOR_ID WHERE name = ? AND surname = ? AND book_name = ?";
+        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE BOOKS.id = ?";
         book =  DBWorker.executeQuery(query, (preparedStatement)->{
-                    preparedStatement.setString(1, name);
-                    preparedStatement.setString(2, surname);
-                    preparedStatement.setString(3, bookName);},
+                    preparedStatement.setInt(1, bookId);},
                 this::bookFromResultSet);
         return book;
     }
