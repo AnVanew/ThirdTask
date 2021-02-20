@@ -12,8 +12,5 @@ public class test {
 //        System.out.println(querry);
 //            ResultSet resultSet = dbWorker.getQuerry(querry);
 //            while (resultSet.next()) System.out.println(resultSet.getString("book_name"));
-
-
-
     }
 }

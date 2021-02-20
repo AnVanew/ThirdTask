@@ -9,74 +9,74 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookManageDB {
-    private final Logger logger = Logger.getLogger(BookManageDB.class);
-    AuthorsDB authorsDB = new AuthorsDB();
+    private final static Logger logger = Logger.getLogger(BookManageDB.class);
 
-    public void addBookWithAuthor(String name, String surname, String bookName, int year, String annotation){
-        if (authorsDB.checkSameAuthor(name,surname)) authorsDB.addAuthor(name, surname);
+    public static void addBookWithAuthor(String name, String surname, String bookName, int year, String annotation){
+        if (AuthorsDB.checkSameAuthor(name,surname)) AuthorsDB.addAuthor(name, surname);
         addBook(name, surname, bookName, year, annotation);
     }
 
-    private void addBook(String name, String surname, String bookName, int year, String annotation){
-        int authorId = authorsDB.getAuthorId(name, surname);
+    private static void addBook(String name, String surname, String bookName, int year, String annotation){
+        int authorId = AuthorsDB.getAuthorId(name, surname);
         String query = "INSERT INTO BOOKS (author_id, book_name, year, annotation) VALUES("+authorId+",'"+bookName+"',"+year+",'"+annotation+"')";
         DBWorker.executeUpdate(query);
     }
 
-    public int getBookId(String bookName, int authorId){
+    public static int getBookId(String bookName, int authorId){
         int bookId=-1;
         String query = "SELECT ID FROM BOOKS WHERE book_name = ?  AND author_id = ?";
-        bookId = DBWorker.executeQuery(query, (preparedStatement)->{
+        Integer res = DBWorker.executeQuery(query, (preparedStatement)->{
             preparedStatement.setString(1, bookName);
             preparedStatement.setInt(2, authorId);},
-            this::bookIdFromResultSet);
+            BookManageDB::bookIdFromResultSet);
+        if (res != null) bookId = res;
         return bookId;
     }
 
-    private int bookIdFromResultSet(ResultSet resultSet) throws SQLException{
+    private static int bookIdFromResultSet(ResultSet resultSet) throws SQLException{
         return resultSet.getInt(1);
     }
 
-    public void deleteBook(int bookId){
+    public static void deleteBook(int bookId){
         String query = "DELETE FROM BOOKS WHERE id =  "+bookId;
         DBWorker.executeUpdate(query);
     }
 
-    public List<Book> getBooksByAuthor(int authorId){
+    public static List<Book> getBooksByAuthor(int authorId){
         List<Book> books = new ArrayList<>();
         String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE author_id = ?";
         List<Book> res =  DBWorker.executeQuery(query, (preparedStatement) ->{
             preparedStatement.setInt(1, authorId);},
-            this::collectBookFromResultSet);
+            BookManageDB::collectBookFromResultSet);
         if(res != null) books = res;
         return books;
     }
 
-    public List<Book> getAllBooks(){
+    public static List<Book> getAllBooks(){
         List<Book> books;
         String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID";
         books = DBWorker.executeQuery(query, (preparedStatement) ->{},
-                this::collectBookFromResultSet);
+                BookManageDB::collectBookFromResultSet);
         return books;
     }
 
-    private List<Book> collectBookFromResultSet(ResultSet resultSet) throws SQLException {
+    private static List<Book> collectBookFromResultSet(ResultSet resultSet) throws SQLException {
         List<Book> booksList = new ArrayList<>();
         do{ booksList.add(bookFromResultSet(resultSet));
         }while (resultSet.next());
         return booksList;
     }
 
-    public Book getBookByAuthorAndBookName(int bookId){
+    public static Book getBookByBookId(int bookId){
         Book book;
         String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE BOOKS.id = ?";
         book =  DBWorker.executeQuery(query, (preparedStatement)->{
                     preparedStatement.setInt(1, bookId);},
-                this::bookFromResultSet);
+                BookManageDB::bookFromResultSet);
         return book;
     }
 
-    private Book bookFromResultSet(ResultSet resultSet) throws SQLException{
+    private static Book bookFromResultSet(ResultSet resultSet) throws SQLException{
         Book bookDB = new Book(
                 new Author(
                         resultSet.getString("name"),
@@ -88,7 +88,7 @@ public class BookManageDB {
         return bookDB;
     }
 
-    public void updateBook(String newAnnotation,int bookId){
+    public static void updateBook(String newAnnotation,int bookId){
         String query = "UPDATE books set annotation = '"+newAnnotation+"' WHERE id = "+bookId;
         DBWorker.executeUpdate(query);
     }

@@ -2,9 +2,8 @@ package Servlets;
 
 import DBWork.AuthorsDB;
 import DBWork.BookManageDB;
-import DBWork.CommentsDB;
-import DBWork.MarksDB;
 import Models.Book;
+import WebWork.AuthorsWeb;
 import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -19,8 +18,6 @@ import java.util.List;
 public class AuthorsServlet extends HttpServlet {
 
     private final Logger logger = Logger.getLogger(AuthorsServlet.class);
-    private final BookManageDB bookManageDB = new BookManageDB();
-    private final AuthorsDB authorsDB = new AuthorsDB();
 
     public void init(ServletConfig servletConfig) {
         try {
@@ -33,10 +30,8 @@ public class AuthorsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
-        String name = req.getParameter("name");
-        String surname = req.getParameter("surname");
-        int authorId = authorsDB.getAuthorId(name, surname);
-        List<Book> books = bookManageDB.getBooksByAuthor(authorId);
+        int authorId = AuthorsWeb.getAuthorIdFronRequest(req);
+        List<Book> books = BookManageDB.getBooksByAuthor(authorId);
         if (books.size() == 0){
             RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
             dispatcher.forward(req, resp);
@@ -52,7 +47,7 @@ public class AuthorsServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String surname = req.getParameter("surname");
         String name = req.getParameter("name");
-        authorsDB.addAuthor(name, surname);
+        AuthorsDB.addAuthor(name, surname);
         resp.sendRedirect("books");
     }
 }
