@@ -18,26 +18,13 @@ public class AuthorsDB {
     }
 
     public static boolean checkSameAuthor(String name, String surname){
-        if( getAuthorId(name, surname) == -1) return true;
-        return false;
-    }
-
-    public static int getAuthorId(String name, String surname){
-        int authorId=-1;
-        String query = "SELECT ID FROM AUTHORS WHERE NAME = ? AND SURNAME = ?";
-        Integer res =  DBWorker.executeQuery(query, (preparedStatement) ->{
-                    preparedStatement.setString(1, name);
-                    preparedStatement.setString(2, surname);},
-                (resultSet) ->{
-                    return resultSet.getInt(1);
-                });
-        if (res != null) authorId =  res;
-        return authorId;
+        Author author = getAuthorByNameAndSurname(name, surname);
+        return author == null;
     }
 
     public static Author getAuthorById(int id){
         Author author;
-        String query = "SELECT * FROM AUTHORS WHERE id = ?";
+        String query = "SELECT name, surname, id FROM AUTHORS WHERE id = ?";
         author = DBWorker.executeQuery(query, (preparedStatement) -> {
             preparedStatement.setInt(1, id);},
             AuthorsDB::authorFromResultSet);
@@ -45,9 +32,20 @@ public class AuthorsDB {
         return author;
     }
 
+    public static Author getAuthorByNameAndSurname(String name, String surname){
+        Author author;
+        String query = "SELECT name, surname, id FROM AUTHORS WHERE name = ? AND surname= ? ";
+        author = DBWorker.executeQuery(query, (preparedStatement) -> {
+                    preparedStatement.setString(1, name);
+                    preparedStatement.setString(2, surname);},
+                AuthorsDB::authorFromResultSet);
+        if (author == null )logger.info("Author not found");
+        return author;
+    }
+
     public static List<Author> getAllAuthors(){
         List<Author> authors;
-        String query = "SELECT * FROM AUTHORS";
+        String query = "SELECT name, surname, id FROM AUTHORS";
         authors = DBWorker.executeQuery(query, (preparedStatement)->{},
             AuthorsDB::collectAuthorFromResultSet);
         return authors;
@@ -63,7 +61,8 @@ public class AuthorsDB {
     private static Author authorFromResultSet(ResultSet resultSet) throws SQLException {
         String name =  resultSet.getString("name");
         String surname =  resultSet.getString("surname");
-        Author author = new Author(name, surname);
+        int id = resultSet.getInt("AUTHORS.id");
+        Author author = new Author(name, surname, id);
         return author;
     }
 }

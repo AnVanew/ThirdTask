@@ -1,9 +1,7 @@
 package Servlets;
 
-import DBWork.AuthorsDB;
-import DBWork.BookManageDB;
-import DBWork.CommentsDB;
 import DBWork.MarksDB;
+import Models.Book;
 import WebWork.BookManageWeb;
 import org.apache.log4j.Logger;
 
@@ -31,11 +29,11 @@ public class MarksServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        int bookId = BookManageWeb.getBookIdFromRequestt(req);
+        Book book = BookManageWeb.getBookFromRequest(req);
         if ("like".equals(req.getParameter("action")))
-            MarksDB.like(bookId);
+            MarksDB.like(book.getId());
         if ("dislike".equals(req.getParameter("action")))
-            MarksDB.dislike(bookId);
+            MarksDB.dislike(book.getId());
         RequestDispatcher dispatcher = req.getRequestDispatcher("searchBook");
         dispatcher.forward(req, resp);
     }

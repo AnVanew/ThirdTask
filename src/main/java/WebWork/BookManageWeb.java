@@ -1,16 +1,19 @@
 package WebWork;
 
 import DBWork.BookManageDB;
+import Models.Book;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class BookManageWeb {
-    private static BookManageDB bookManageDB = new BookManageDB();
-    public static int getBookIdFromRequestt(HttpServletRequest req){
-        int authorId = AuthorsWeb.getAuthorIdFronRequest(req);
+
+    public static Book getBookFromRequest(HttpServletRequest req){
+        Book book;
+        String name = req.getParameter("name");
+        String surname = req.getParameter("surname");
         String bookName = req.getParameter("bookName");
-        int bookId = bookManageDB.getBookId(bookName, authorId);
-        return  bookId;
+        book = BookManageDB.getBookByAuthorAndName(name, surname, bookName);
+        return  book;
     }
 
 }

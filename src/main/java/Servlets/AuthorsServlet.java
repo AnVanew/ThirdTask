@@ -2,6 +2,7 @@ package Servlets;
 
 import DBWork.AuthorsDB;
 import DBWork.BookManageDB;
+import Models.Author;
 import Models.Book;
 import WebWork.AuthorsWeb;
 import org.apache.log4j.Logger;
@@ -30,8 +31,8 @@ public class AuthorsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
-        int authorId = AuthorsWeb.getAuthorIdFronRequest(req);
-        List<Book> books = BookManageDB.getBooksByAuthor(authorId);
+        Author author = AuthorsWeb.getAuthorFromRequest(req);
+        List<Book> books = BookManageDB.getBooksByAuthor(author.getId());
         if (books.size() == 0){
             RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
             dispatcher.forward(req, resp);

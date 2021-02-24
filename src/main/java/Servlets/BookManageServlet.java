@@ -64,19 +64,19 @@ public class BookManageServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method PUT ");
-        int bookId = BookManageWeb.getBookIdFromRequestt(req);
+        Book book = BookManageWeb.getBookFromRequest(req);
         String newAnnotation = req.getParameter("newAnnotation");
-        BookManageDB.updateBook(newAnnotation, bookId);
+        BookManageDB.updateBook(newAnnotation, book.getId());
         resp.sendRedirect("books");
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method DELETE ");
-        int bookId = BookManageWeb.getBookIdFromRequestt(req);
-        MarksDB.deleteBookMarks(bookId);
-        CommentsDB.deleteBookComments(bookId);
-        BookManageDB.deleteBook(bookId);
+        Book book = BookManageWeb.getBookFromRequest(req);
+        MarksDB.deleteBookMarks(book.getId());
+        CommentsDB.deleteBookComments(book.getId());
+        BookManageDB.deleteBook(book.getId());
         resp.sendRedirect("books");
     }
 }

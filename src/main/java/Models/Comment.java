@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class Comment {
+public class Comment extends DBEntity {
     private String userName;
     private String comment;
 }

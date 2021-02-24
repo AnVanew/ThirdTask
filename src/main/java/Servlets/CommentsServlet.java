@@ -1,8 +1,7 @@
 package Servlets;
 
-import DBWork.AuthorsDB;
-import DBWork.BookManageDB;
 import DBWork.CommentsDB;
+import Models.Book;
 import WebWork.BookManageWeb;
 import org.apache.log4j.Logger;
 
@@ -31,10 +30,10 @@ public class CommentsServlet extends HttpServlet {
         logger.info("Method POST");
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        int bookId = BookManageWeb.getBookIdFromRequestt(req);
+        Book book = BookManageWeb.getBookFromRequest(req);
         String userName = req.getParameter("userName");
         String comment = req.getParameter("comment");
-        CommentsDB.addComment(bookId, userName, comment);
+        CommentsDB.addComment(book.getId(), userName, comment);
         RequestDispatcher dispatcher = req.getRequestDispatcher("searchBook");
         dispatcher.forward(req, resp);
     }

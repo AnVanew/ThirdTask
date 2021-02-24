@@ -82,7 +82,7 @@
 <form action = "books" method="post">
     <select name="authorId">
         <c:forEach var="author" items="${authors}">
-            <option value=${author.getAuthorId()}>${author.getName()}  ${author.getSurname()}</option>
+            <option value=${author.getId()}>${author.getName()}  ${author.getSurname()}</option>
         </c:forEach>
     </select>
     <input required type="text" name="bookName" placeholder="Название книги">

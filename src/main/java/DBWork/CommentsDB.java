@@ -15,7 +15,7 @@ public class CommentsDB {
 
     public static List<Comment> getAllComments(int bookId){
         List<Comment> comments;
-        String query = "SELECT * FROM comments WHERE book_id = ?";
+        String query = "SELECT user_name, comment FROM comments WHERE book_id = ?";
         comments = DBWorker.executeQuery(query, (preparedStatement)->{
             preparedStatement.setInt(1, bookId);},
             CommentsDB::collectCommentFromResultSet);

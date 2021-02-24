@@ -1,16 +1,18 @@
 package WebWork;
 
 import DBWork.AuthorsDB;
+import Models.Author;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 
 public class AuthorsWeb {
     private  static AuthorsDB authorsDB = new AuthorsDB();
-    public static int getAuthorIdFronRequest(HttpServletRequest req){
+
+    public static Author getAuthorFromRequest(HttpServletRequest req){
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
-        int authorId = authorsDB.getAuthorId(name, surname);
-        return authorId;
+        Author author = AuthorsDB.getAuthorByNameAndSurname(name, surname);
+        return author;
     }
 }

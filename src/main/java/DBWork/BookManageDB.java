@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SplittableRandom;
 
 public class BookManageDB {
     private final static Logger logger = Logger.getLogger(BookManageDB.class);
@@ -17,24 +18,9 @@ public class BookManageDB {
     }
 
     private static void addBook(String name, String surname, String bookName, int year, String annotation){
-        int authorId = AuthorsDB.getAuthorId(name, surname);
-        String query = "INSERT INTO BOOKS (author_id, book_name, year, annotation) VALUES("+authorId+",'"+bookName+"',"+year+",'"+annotation+"')";
+        Author author = AuthorsDB.getAuthorByNameAndSurname(name, surname);
+        String query = "INSERT INTO BOOKS (author_id, book_name, year, annotation) VALUES("+author.getId()+",'"+bookName+"',"+year+",'"+annotation+"')";
         DBWorker.executeUpdate(query);
-    }
-
-    public static int getBookId(String bookName, int authorId){
-        int bookId=-1;
-        String query = "SELECT ID FROM BOOKS WHERE book_name = ?  AND author_id = ?";
-        Integer res = DBWorker.executeQuery(query, (preparedStatement)->{
-            preparedStatement.setString(1, bookName);
-            preparedStatement.setInt(2, authorId);},
-            BookManageDB::bookIdFromResultSet);
-        if (res != null) bookId = res;
-        return bookId;
-    }
-
-    private static int bookIdFromResultSet(ResultSet resultSet) throws SQLException{
-        return resultSet.getInt(1);
     }
 
     public static void deleteBook(int bookId){
@@ -44,7 +30,7 @@ public class BookManageDB {
 
     public static List<Book> getBooksByAuthor(int authorId){
         List<Book> books = new ArrayList<>();
-        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE author_id = ?";
+        String query = "SELECT name, surname, author_id, book_name, year, annotation, BOOKS.id FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE author_id = ?";
         List<Book> res =  DBWorker.executeQuery(query, (preparedStatement) ->{
             preparedStatement.setInt(1, authorId);},
             BookManageDB::collectBookFromResultSet);
@@ -54,7 +40,7 @@ public class BookManageDB {
 
     public static List<Book> getAllBooks(){
         List<Book> books;
-        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID";
+        String query = "SELECT name, surname, author_id, book_name, year, annotation, BOOKS.id FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID";
         books = DBWorker.executeQuery(query, (preparedStatement) ->{},
                 BookManageDB::collectBookFromResultSet);
         return books;
@@ -67,24 +53,29 @@ public class BookManageDB {
         return booksList;
     }
 
-    public static Book getBookByBookId(int bookId){
+    public static Book getBookByAuthorAndName(String name, String surName, String bookName){
         Book book;
-        String query = "SELECT * FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE BOOKS.id = ?";
+        Author author = AuthorsDB.getAuthorByNameAndSurname(name, surName);
+        String query = "SELECT name, surname, author_id, book_name, year, annotation, BOOKS.id FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE book_name = ? AND author_id = ?";
         book =  DBWorker.executeQuery(query, (preparedStatement)->{
-                    preparedStatement.setInt(1, bookId);},
+                    preparedStatement.setString(1, bookName);
+                    preparedStatement.setInt(2,author.getId());},
                 BookManageDB::bookFromResultSet);
         return book;
     }
 
     private static Book bookFromResultSet(ResultSet resultSet) throws SQLException{
-        Book bookDB = new Book(
-                new Author(
-                        resultSet.getString("name"),
-                        resultSet.getString("surname")
-                ),
+        Book bookDB = new Book (
+               new Author(
+                       resultSet.getString("name"),
+                       resultSet.getString("surname"),
+                       resultSet.getInt("author_id")
+               ),
                 resultSet.getString("book_name"),
+                resultSet.getString("annotation"),
                 resultSet.getInt("year"),
-                resultSet.getString("annotation"));
+                resultSet.getInt("BOOKS.id")
+        );
         return bookDB;
     }
 

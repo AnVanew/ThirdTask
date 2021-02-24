@@ -1,6 +1,5 @@
 package Servlets;
 
-import DBWork.BookManageDB;
 import DBWork.CommentsDB;
 import DBWork.MarksDB;
 import Models.Book;
@@ -32,15 +31,14 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
-        int bookId = BookManageWeb.getBookIdFromRequestt(req);
-        Book book = BookManageDB.getBookByBookId(bookId);
+        Book book = BookManageWeb.getBookFromRequest(req);
         if (book == null){
             RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
             dispatcher.forward(req, resp);
         }
-        int likes = MarksDB.getBookLikes(bookId);
-        int dislikes = MarksDB.getBookDislikes(bookId);
-        List<Comment> comments = CommentsDB.getAllComments(bookId);
+        int likes = MarksDB.getBookLikes(book.getId());
+        int dislikes = MarksDB.getBookDislikes(book.getId());
+        List<Comment> comments = CommentsDB.getAllComments(book.getId());
         req.setAttribute("book", book);
         req.setAttribute("likes", likes);
         req.setAttribute("dislikes", dislikes);
@@ -54,11 +52,10 @@ public class BookServlet extends HttpServlet {
         logger.info("Method POST");
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        int bookId = BookManageWeb.getBookIdFromRequestt(req);
-        Book book = BookManageDB.getBookByBookId(bookId);
-        int likes = MarksDB.getBookLikes(bookId);
-        int dislikes = MarksDB.getBookDislikes(bookId);
-        List<Comment> comments = CommentsDB.getAllComments(bookId);
+        Book book = BookManageWeb.getBookFromRequest(req);
+        int likes = MarksDB.getBookLikes(book.getId());
+        int dislikes = MarksDB.getBookDislikes(book.getId());
+        List<Comment> comments = CommentsDB.getAllComments(book.getId());
         req.setAttribute("book", book);
         req.setAttribute("likes", likes);
         req.setAttribute("dislikes", dislikes);
