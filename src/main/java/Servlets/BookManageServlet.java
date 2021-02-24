@@ -43,7 +43,6 @@ public class BookManageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method POST ");
         req.setCharacterEncoding("UTF-8");
-        resp.setCharacterEncoding("UTF-8");
         if ("delete".equals(req.getParameter("action"))) {
             doDelete(req, resp);
         } else if ("update".equals(req.getParameter("action"))) {
@@ -65,8 +64,14 @@ public class BookManageServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method PUT ");
         Book book = BookManageWeb.getBookFromRequest(req);
+        BookManageDB.deleteBook(book.getId());
+        String newName = req.getParameter("newName");
+        String newSurname = req.getParameter("newSurname");
+        String newBookName = req.getParameter("newBookName");
+        int newYear = Integer.parseInt(req.getParameter("newYear"));
         String newAnnotation = req.getParameter("newAnnotation");
-        BookManageDB.updateBook(newAnnotation, book.getId());
+        BookManageDB.addBookWithAuthor(newName, newSurname, newBookName, newYear, newAnnotation);
+       // BookManageDB.updateBook(newAnnotation, book.getId());
         resp.sendRedirect("books");
     }
 

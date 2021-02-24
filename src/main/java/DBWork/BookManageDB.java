@@ -56,7 +56,17 @@ public class BookManageDB {
     public static Book getBookByAuthorAndName(String name, String surName, String bookName){
         Book book;
         Author author = AuthorsDB.getAuthorByNameAndSurname(name, surName);
-        String query = "SELECT name, surname, author_id, book_name, year, annotation, BOOKS.id FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE book_name = ? AND author_id = ?";
+        String query = "SELECT " +
+                "b.id, " +
+                "a.name name, " +
+                "a.surname surname, " +
+                "b.author_id author_id, " +
+                "b.book_name, " +
+                "b.year, " +
+                "b.annotation " +
+                "FROM BOOKS b " +
+                "JOIN AUTHORS a ON b.author_id = a.id " +
+                "WHERE book_name = ? AND author_id = ?";
         book =  DBWorker.executeQuery(query, (preparedStatement)->{
                     preparedStatement.setString(1, bookName);
                     preparedStatement.setInt(2,author.getId());},
@@ -66,15 +76,11 @@ public class BookManageDB {
 
     private static Book bookFromResultSet(ResultSet resultSet) throws SQLException{
         Book bookDB = new Book (
-               new Author(
-                       resultSet.getString("name"),
-                       resultSet.getString("surname"),
-                       resultSet.getInt("author_id")
-               ),
-                resultSet.getString("book_name"),
-                resultSet.getString("annotation"),
-                resultSet.getInt("year"),
-                resultSet.getInt("BOOKS.id")
+            AuthorsDB.getAuthorFromResultSet(resultSet),
+            resultSet.getString("book_name"),
+            resultSet.getString("annotation"),
+            resultSet.getInt("year"),
+            resultSet.getInt("BOOKS.id")
         );
         return bookDB;
     }

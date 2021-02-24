@@ -17,10 +17,12 @@ ${param.name}
 ${param.surname}
 <form action="books" method="post">
 
-<%--    <%request.setCharacterEncoding("UTF-8");--%>
-<%--    response.setCharacterEncoding("UTF-8");%>--%>
+    <input type="text" name="newName" value=${book.getName()}>
+    <input type="text" name="newSurname" value=${book.getSurname()}>
+    <input type="text" name="newBookName" value=${book.getBookName()}>
+    <input type="text" name="newYear" value=${book.getYear()}>
+    <input type="text" name="newAnnotation" value=${book.getAnnotation()}>
 
-    <input type="text" name="newAnnotation" value="new annotation">
     <input type="hidden" name="name" value="${param.name}">
     <input type="hidden" name="surname" value="${param.surname}">
     <input type="hidden" name="bookName" value="${param.bookName}">

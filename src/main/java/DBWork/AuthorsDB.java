@@ -24,44 +24,44 @@ public class AuthorsDB {
 
     public static Author getAuthorById(int id){
         Author author;
-        String query = "SELECT name, surname, id FROM AUTHORS WHERE id = ?";
+        String query = "SELECT name, surname, id author_id FROM AUTHORS WHERE id = ?";
         author = DBWorker.executeQuery(query, (preparedStatement) -> {
             preparedStatement.setInt(1, id);},
-            AuthorsDB::authorFromResultSet);
+            AuthorsDB::getAuthorFromResultSet);
         if (author == null )logger.info("Author not found");
         return author;
     }
 
     public static Author getAuthorByNameAndSurname(String name, String surname){
         Author author;
-        String query = "SELECT name, surname, id FROM AUTHORS WHERE name = ? AND surname= ? ";
+        String query = "SELECT name, surname, id author_id FROM AUTHORS WHERE name = ? AND surname= ? ";
         author = DBWorker.executeQuery(query, (preparedStatement) -> {
-                    preparedStatement.setString(1, name);
-                    preparedStatement.setString(2, surname);},
-                AuthorsDB::authorFromResultSet);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);},
+            AuthorsDB::getAuthorFromResultSet);
         if (author == null )logger.info("Author not found");
         return author;
     }
 
     public static List<Author> getAllAuthors(){
         List<Author> authors;
-        String query = "SELECT name, surname, id FROM AUTHORS";
+        String query = "SELECT name, surname, id author_id FROM AUTHORS";
         authors = DBWorker.executeQuery(query, (preparedStatement)->{},
             AuthorsDB::collectAuthorFromResultSet);
         return authors;
     }
 
     private static List<Author> collectAuthorFromResultSet(ResultSet resultSet) throws SQLException {
-        List<Author> autorsList = new ArrayList<>();
-        do { autorsList.add( authorFromResultSet(resultSet) );
+        List<Author> authorsList = new ArrayList<>();
+        do { authorsList.add( getAuthorFromResultSet(resultSet) );
         }while (resultSet.next());
-        return autorsList;
+        return authorsList;
     }
 
-    private static Author authorFromResultSet(ResultSet resultSet) throws SQLException {
+    public static Author getAuthorFromResultSet(ResultSet resultSet) throws SQLException {
         String name =  resultSet.getString("name");
         String surname =  resultSet.getString("surname");
-        int id = resultSet.getInt("AUTHORS.id");
+        int id = resultSet.getInt("author_id");
         Author author = new Author(name, surname, id);
         return author;
     }
