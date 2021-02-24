@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorsServlet extends HttpServlet {
@@ -32,7 +33,9 @@ public class AuthorsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
         Author author = AuthorsWeb.getAuthorFromRequest(req);
-        List<Book> books = BookManageDB.getBooksByAuthor(author.getId());
+        List<Book> books = new ArrayList<>();
+        if (author != null)
+        books = BookManageDB.getBooksByAuthor(author.getId());
         if (books.size() == 0){
             RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
             dispatcher.forward(req, resp);

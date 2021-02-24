@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SplittableRandom;
+import static DBWork.DataBaseConst.*;
 
 public class BookManageDB {
     private final static Logger logger = Logger.getLogger(BookManageDB.class);
@@ -30,7 +30,17 @@ public class BookManageDB {
 
     public static List<Book> getBooksByAuthor(int authorId){
         List<Book> books = new ArrayList<>();
-        String query = "SELECT name, surname, author_id, book_name, year, annotation, BOOKS.id FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID WHERE author_id = ?";
+        String query = "SELECT " +
+                "b.id " + BOOK_ID_COLUMN +
+                ", a.name " + AUTHOR_NAME_COLUMN +
+                ", a.surname " + AUTHOR_SURNAME_COLUMN +
+                ", b.author_id "+ AUTHOR_ID_COLUMN +
+                ", b.book_name "+ BOOK_NAME_COLUMN +
+                ", b.year "+ BOOK_YEAR_COLUMN +
+                ", b.annotation "+ BOOK_ANNOTATION_COLUMN +
+                ", FROM BOOKS b " +
+                "JOIN AUTHORS a ON b.AUTHOR_ID = a.ID " +
+                "WHERE b.author_id = ?";
         List<Book> res =  DBWorker.executeQuery(query, (preparedStatement) ->{
             preparedStatement.setInt(1, authorId);},
             BookManageDB::collectBookFromResultSet);
@@ -40,7 +50,16 @@ public class BookManageDB {
 
     public static List<Book> getAllBooks(){
         List<Book> books;
-        String query = "SELECT name, surname, author_id, book_name, year, annotation, BOOKS.id FROM BOOKS JOIN AUTHORS ON BOOKS.AUTHOR_ID = AUTHORS.ID";
+        String query = "SELECT " +
+                "b.id " + BOOK_ID_COLUMN +
+                ", a.name " + AUTHOR_NAME_COLUMN +
+                ", a.surname " + AUTHOR_SURNAME_COLUMN +
+                ", b.author_id "+ AUTHOR_ID_COLUMN +
+                ", b.book_name "+ BOOK_NAME_COLUMN +
+                ", b.year "+ BOOK_YEAR_COLUMN +
+                ", b.annotation "+ BOOK_ANNOTATION_COLUMN +
+                " FROM BOOKS b " +
+                " JOIN AUTHORS a ON b.AUTHOR_ID = a.ID";
         books = DBWorker.executeQuery(query, (preparedStatement) ->{},
                 BookManageDB::collectBookFromResultSet);
         return books;
@@ -56,17 +75,18 @@ public class BookManageDB {
     public static Book getBookByAuthorAndName(String name, String surName, String bookName){
         Book book;
         Author author = AuthorsDB.getAuthorByNameAndSurname(name, surName);
+        if (author == null) return null;
         String query = "SELECT " +
-                "b.id, " +
-                "a.name name, " +
-                "a.surname surname, " +
-                "b.author_id author_id, " +
-                "b.book_name, " +
-                "b.year, " +
-                "b.annotation " +
-                "FROM BOOKS b " +
-                "JOIN AUTHORS a ON b.author_id = a.id " +
-                "WHERE book_name = ? AND author_id = ?";
+                "b.id " + BOOK_ID_COLUMN +
+                ", a.name " + AUTHOR_NAME_COLUMN +
+                ", a.surname " + AUTHOR_SURNAME_COLUMN +
+                ", b.author_id "+ AUTHOR_ID_COLUMN +
+                ", b.book_name "+ BOOK_NAME_COLUMN +
+                ", b.year "+ BOOK_YEAR_COLUMN +
+                ", b.annotation "+ BOOK_ANNOTATION_COLUMN +
+                " FROM BOOKS b " +
+                " JOIN AUTHORS a ON b.author_id = a.id " +
+                " WHERE book_name = ? AND author_id = ?";
         book =  DBWorker.executeQuery(query, (preparedStatement)->{
                     preparedStatement.setString(1, bookName);
                     preparedStatement.setInt(2,author.getId());},
@@ -77,10 +97,10 @@ public class BookManageDB {
     private static Book bookFromResultSet(ResultSet resultSet) throws SQLException{
         Book bookDB = new Book (
             AuthorsDB.getAuthorFromResultSet(resultSet),
-            resultSet.getString("book_name"),
-            resultSet.getString("annotation"),
-            resultSet.getInt("year"),
-            resultSet.getInt("BOOKS.id")
+            resultSet.getString(BOOK_NAME_COLUMN),
+            resultSet.getString(BOOK_ANNOTATION_COLUMN),
+            resultSet.getInt(BOOK_YEAR_COLUMN),
+            resultSet.getInt(BOOK_ID_COLUMN)
         );
         return bookDB;
     }

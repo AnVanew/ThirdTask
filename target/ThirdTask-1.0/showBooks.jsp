@@ -51,7 +51,7 @@
                     <input type="submit" value="Подробнее" style="float:left">
                 </form>
 
-                <form action = "updateBook.jsp" >
+                <form action = "updateBook" >
                     <input type="hidden" name="name" value="${book.getName()}">
                     <input type="hidden" name="surname" value="${book.getSurname()}">
                     <input type="hidden" name="bookName" value="${book.getBookName()}">
@@ -78,8 +78,6 @@
     <input type="hidden" name="action" value="addAuthor">
     <input type="submit" value="Добавить автора" >
 </form>
-
-
 
 <form action = "books" method="post">
     <select name="authorId">

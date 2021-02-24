@@ -51,10 +51,12 @@
                     <input type="submit" value="Подробнее" style="float:left">
                 </form>
 
-                <form action = "updateBook.jsp" >
+                <form action = "updateBook" >
                     <input type="hidden" name="name" value="${book.getName()}">
                     <input type="hidden" name="surname" value="${book.getSurname()}">
                     <input type="hidden" name="bookName" value="${book.getBookName()}">
+                    <input type="hidden" name="year" value="${book.getYear()}">
+                    <input type="hidden" name="annotation" value="${book.getAnnotation()}">
                     <input type="submit" value="Изменить" style="float:left">
                 </form>
 
@@ -77,12 +79,10 @@
     <input type="submit" value="Добавить автора" >
 </form>
 
-
-
 <form action = "books" method="post">
     <select name="authorId">
         <c:forEach var="author" items="${authors}">
-            <option value=${author.getAuthorId()}>${author.getName()}  ${author.getSurname()}</option>
+            <option value=${author.getId()}>${author.getName()}  ${author.getSurname()}</option>
         </c:forEach>
     </select>
     <input required type="text" name="bookName" placeholder="Название книги">

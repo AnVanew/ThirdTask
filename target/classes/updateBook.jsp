@@ -6,25 +6,33 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Изменить данные пользователя</title>
 </head>
 <body>
 
-Редактировать аннотацию книги
-${param.name}
-${param.surname}
+Редактировать книгу
+
 <form action="books" method="post">
 
-<%--    <%request.setCharacterEncoding("UTF-8");--%>
-<%--    response.setCharacterEncoding("UTF-8");%>--%>
+    <select name="authorId">
+        <c:forEach var="author" items="${authors}">
+            <option value=${author.getId()}>${author.getName()}  ${author.getSurname()}</option>
+        </c:forEach>
+    </select>
 
-    <input type="text" name="newAnnotation" value="new annotation">
     <input type="hidden" name="name" value="${param.name}">
     <input type="hidden" name="surname" value="${param.surname}">
     <input type="hidden" name="bookName" value="${param.bookName}">
+
+    <input type="text" name="newBookName" value="${book.getBookName()}">
+    <input type="text" name="newYear" value="${book.getYear()}">
+    <input type="text" name="newAnnotation" value="${book.getAnnotation()}">
+
     <input type="hidden" name="action" value="update">
+
     <input type="submit" value="Обновить">
 </form>
 

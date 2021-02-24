@@ -59,5 +59,15 @@
         <url-pattern>/addComment</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>UpdateBookServlet</servlet-name>
+        <servlet-class>Servlets.UpdateBookServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UpdateBookServlet</servlet-name>
+        <url-pattern>/updateBook</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

@@ -65,8 +65,10 @@ public class BookManageServlet extends HttpServlet {
         logger.info("Method PUT ");
         Book book = BookManageWeb.getBookFromRequest(req);
         BookManageDB.deleteBook(book.getId());
-        String newName = req.getParameter("newName");
-        String newSurname = req.getParameter("newSurname");
+        int newAuthorId = Integer.parseInt(req.getParameter("authorId"));
+        Author author = AuthorsDB.getAuthorById(newAuthorId);
+        String newName = author.getName();
+        String newSurname = author.getSurname();
         String newBookName = req.getParameter("newBookName");
         int newYear = Integer.parseInt(req.getParameter("newYear"));
         String newAnnotation = req.getParameter("newAnnotation");
