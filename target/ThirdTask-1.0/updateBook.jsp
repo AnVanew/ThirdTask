@@ -23,13 +23,11 @@
         </c:forEach>
     </select>
 
-    <input type="hidden" name="name" value="${param.name}">
-    <input type="hidden" name="surname" value="${param.surname}">
-    <input type="hidden" name="bookName" value="${param.bookName}">
+    <input type="hidden" name="book_id" value="${param.book_id}">
 
-    <input type="text" name="newBookName" value="${book.getBookName()}">
-    <input type="text" name="newYear" value="${book.getYear()}">
-    <input type="text" name="newAnnotation" value="${book.getAnnotation()}">
+    <input type="text" name="newBookName" value="${param.bookName}">
+    <input type="text" name="newYear" value="${param.year}">
+    <input type="text" name="newAnnotation" value="${param.annotation}">
 
     <input type="hidden" name="action" value="update">
 

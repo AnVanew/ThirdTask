@@ -29,7 +29,7 @@ public class MarksServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        Book book = BookManageWeb.getBookFromRequest(req);
+        Book book = BookManageWeb.getBookFromRequestId(req);
         if ("like".equals(req.getParameter("action")))
             MarksDB.like(book.getId());
         if ("dislike".equals(req.getParameter("action")))

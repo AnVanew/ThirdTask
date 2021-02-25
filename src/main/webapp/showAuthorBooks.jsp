@@ -31,24 +31,20 @@
             <td>
 
                 <form action = "searchBook" >
-                    <input type="hidden" name="name" value="${book.getName()}">
-                    <input type="hidden" name="surname" value="${book.getSurname()}">
-                    <input type="hidden" name="bookName" value="${book.getBookName()}">
+                    <input type="hidden" name="book_id" value="${book.getId()}">
                     <input type="submit" value="Подробнее" style="float:left">
                 </form>
 
-                <form action = "updateBook.jsp" method="post">
-                    <input type="hidden" name="name" value="${book.getName()}">
-                    <input type="hidden" name="surname" value="${book.getSurname()}">
+                <form action = "updateBook" >
                     <input type="hidden" name="bookName" value="${book.getBookName()}">
                     <input type="hidden" name="year" value="${book.getYear()}">
+                    <input type="hidden" name="annotation" value="${book.getAnnotation()}">
+                    <input type="hidden" name="book_id" value="${book.getId()}">
                     <input type="submit" value="Изменить" style="float:left">
                 </form>
 
                 <form action="deleteBook.jsp" method="post">
-                    <input type="hidden" name="name" value="${book.getName()}">
-                    <input type="hidden" name="surname" value="${book.getSurname()}">
-                    <input type="hidden" name="bookName" value="${book.getBookName()}">
+                    <input type="hidden" name="book_id" value="${book.getId()}">
                     <input type="submit" value="Удалить" style="float:left">
                 </form>
 

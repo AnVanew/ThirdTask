@@ -30,7 +30,7 @@ public class CommentsServlet extends HttpServlet {
         logger.info("Method POST");
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        Book book = BookManageWeb.getBookFromRequest(req);
+        Book book = BookManageWeb.getBookFromRequestId(req);
         String userName = req.getParameter("userName");
         String comment = req.getParameter("comment");
         CommentsDB.addComment(book.getId(), userName, comment);

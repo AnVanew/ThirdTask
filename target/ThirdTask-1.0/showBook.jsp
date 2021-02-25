@@ -44,9 +44,7 @@
         <td>${likes}</td>
         <td>
             <form action="addMark" method="post">
-                <input type="hidden" name="name" value="${param.name}">
-                <input type="hidden" name="surname" value="${param.surname}">
-                <input type="hidden" name="bookName" value="${param.bookName}">
+                <input type="hidden" name="book_id" value="${book.getId()}">
                 <input type="submit" value="Like">
                 <input type="hidden" name="action" value="like">
             </form>
@@ -58,9 +56,7 @@
         <td>${dislikes}</td>
         <td>
             <form action="addMark" method="post">
-                <input type="hidden" name="name" value="${param.name}">
-                <input type="hidden" name="surname" value="${param.surname}">
-                <input type="hidden" name="bookName" value="${param.bookName}">
+                <input type="hidden" name="book_id" value="${book.getId()}">
                 <input type="submit" value="Dislike">
                 <input type="hidden" name="action" value="dislike">
             </form>
@@ -70,9 +66,7 @@
     <tr>
         <td>
             <form action="addComment" method="post">
-                <input type="hidden" name="name" value="${param.name}">
-                <input type="hidden" name="surname" value="${param.surname}">
-                <input type="hidden" name="bookName" value="${param.bookName}">
+                <input type="hidden" name="book_id" value="${book.getId()}">
                 <input type="text" name="userName" placeholder="имя пользователя">
                 <input type="text" name="comment" placeholder="Ваш комментарий">
                 <input type="submit" value="Добавить комментарий">

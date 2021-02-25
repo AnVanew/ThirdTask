@@ -18,9 +18,7 @@
 response.setCharacterEncoding("UTF-8");%>
 
 <form action="books" method="post">
-<input type="hidden" name="name" value="${param.name}">
-<input type="hidden" name="surname" value="${param.surname}">
-<input type="hidden" name="bookName" value="${param.bookName}">
+<input type="hidden" name="book_id" value="${param.book_id}">
 <input type="hidden" name="action" value="delete">
 <input type="submit" value="Удалить">
 </form>

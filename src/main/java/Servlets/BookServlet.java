@@ -31,7 +31,13 @@ public class BookServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info("Method GET");
-        Book book = BookManageWeb.getBookFromRequest(req);
+        Book book;
+        if ("searchBook".equals(req.getParameter("action"))) {
+            book = BookManageWeb.getBookFromRequestNameSurnameBookName(req);
+        }
+        else {
+            book = BookManageWeb.getBookFromRequestId(req);
+        }
         if (book == null){
             RequestDispatcher dispatcher = req.getRequestDispatcher("/BookNotFound.jsp");
             dispatcher.forward(req, resp);
@@ -52,7 +58,7 @@ public class BookServlet extends HttpServlet {
         logger.info("Method POST");
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        Book book = BookManageWeb.getBookFromRequest(req);
+        Book book = BookManageWeb.getBookFromRequestId(req);
         int likes = MarksDB.getBookLikes(book.getId());
         int dislikes = MarksDB.getBookDislikes(book.getId());
         List<Comment> comments = CommentsDB.getAllComments(book.getId());

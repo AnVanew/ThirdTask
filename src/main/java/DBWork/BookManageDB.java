@@ -94,6 +94,26 @@ public class BookManageDB {
         return book;
     }
 
+    public static Book getBookByBookId(int id){
+        Book book;
+        String query = "SELECT " +
+                "b.id " + BOOK_ID_COLUMN +
+                ", a.name " + AUTHOR_NAME_COLUMN +
+                ", a.surname " + AUTHOR_SURNAME_COLUMN +
+                ", b.author_id "+ AUTHOR_ID_COLUMN +
+                ", b.book_name "+ BOOK_NAME_COLUMN +
+                ", b.year "+ BOOK_YEAR_COLUMN +
+                ", b.annotation "+ BOOK_ANNOTATION_COLUMN +
+                " FROM BOOKS b " +
+                " JOIN AUTHORS a ON b.author_id = a.id " +
+                " WHERE b.id = ?";
+        book =  DBWorker.executeQuery(query, (preparedStatement)->{
+                    preparedStatement.setInt(1, id);},
+                BookManageDB::bookFromResultSet);
+        return book;
+    }
+
+
     private static Book bookFromResultSet(ResultSet resultSet) throws SQLException{
         Book bookDB = new Book (
             AuthorsDB.getAuthorFromResultSet(resultSet),
@@ -103,10 +123,5 @@ public class BookManageDB {
             resultSet.getInt(BOOK_ID_COLUMN)
         );
         return bookDB;
-    }
-
-    public static void updateBook(String newAnnotation,int bookId){
-        String query = "UPDATE books set annotation = '"+newAnnotation+"' WHERE id = "+bookId;
-        DBWorker.executeUpdate(query);
     }
 }

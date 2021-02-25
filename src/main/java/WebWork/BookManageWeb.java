@@ -7,7 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 
 public class BookManageWeb {
 
-    public static Book getBookFromRequest(HttpServletRequest req){
+    public static Book getBookFromRequestId(HttpServletRequest req){
+        Book book;
+        int id = Integer.parseInt(req.getParameter("book_id"));
+        book = BookManageDB.getBookByBookId(id);
+        return  book;
+    }
+
+    public static Book getBookFromRequestNameSurnameBookName(HttpServletRequest req){
         Book book;
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");
@@ -15,5 +22,4 @@ public class BookManageWeb {
         book = BookManageDB.getBookByAuthorAndName(name, surname, bookName);
         return  book;
     }
-
 }
